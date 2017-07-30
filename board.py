@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
 
-import curses
 from math import floor
 
 class board:
@@ -76,46 +75,3 @@ class board:
             y, x = self.grid2screen(q, r)
 
             scr.addch(y, x, ord(chars[self.spaces[q, r]]))
-
-
-def main(stdscr):
-    h = board()
-    class Data:
-        pass
-    cursor = Data()
-    cursor.q = 0
-    cursor.r = 0
-
-    done = False
-    key = ''
-    while not done:
-        if key == 'q':
-            done = True
-            break
-        elif key == 'h' or key == 'KEY_LEFT':
-            if h.isValid(cursor.q - 1, cursor.r):
-                cursor.q -= 1
-        elif key == 'j' or key == 'KEY_DOWN':
-            if h.isValid(cursor.q, cursor.r + 1):
-                cursor.r += 1
-        elif key == 'k' or key == 'KEY_UP':
-            if h.isValid(cursor.q, cursor.r - 1):
-                cursor.r -= 1
-        elif key == 'l' or key == 'KEY_RIGHT':
-            if h.isValid(cursor.q + 1, cursor.r):
-                cursor.q += 1
-        elif key == ' ':
-            h.invert(cursor.q, cursor.r)
-        elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            h.toggle(cursor.q, cursor.r, int(key))
-        else:
-            stdscr.addstr(10,0,key+'                    ')
-
-        h.draw(stdscr)
-        stdscr.move(*h.grid2screen(cursor.q, cursor.r))
-        stdscr.refresh()
-        key = stdscr.getkey()
-    
-
-
-curses.wrapper(main)
