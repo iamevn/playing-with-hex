@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import curses
+import curses, random
 from board import board
+import pieces
 
 def main(stdscr):
     h = board()
@@ -20,11 +21,12 @@ def main(stdscr):
     pieceswin = piecesframe.subwin(4, 26, 12, 1)
     pieceswin.vline(0, 8, curses.ACS_VLINE, 4)
     pieceswin.vline(0, 17, curses.ACS_VLINE, 4)
-    pwin1 = pieceswin.subwin(4, 7, 12, 1)
-    pwin2 = pieceswin.subwin(4, 7, 12, 10)
-    pwin3 = pieceswin.subwin(4, 7, 12, 19)
+    pwin1 = pieceswin.subwin(4, 8, 12, 1)
+    pwin2 = pieceswin.subwin(4, 8, 12, 10)
+    pwin3 = pieceswin.subwin(4, 8, 12, 19)
     pwins = [pwin1, pwin2, pwin3]
-    focusedpiece = 0
+    focusedpwin = 0
+    selpieceidx = random.randrange(len(pieces.plist))
 
     mainfocused = True
 
@@ -57,9 +59,16 @@ def main(stdscr):
                 stdscr.addstr(19,0,key)
                 stdscr.clrtoeol()
         elif key == 'h' or key == 'KEY_LEFT':
-            focusedpiece = (focusedpiece - 1) % 3
+            focusedpwin = (focusedpwin - 1) % 3
         elif key == 'l' or key == 'KEY_RIGHT':
-            focusedpiece = (focusedpiece + 1) % 3
+            focusedpwin = (focusedpwin + 1) % 3
+        elif key == 'j' or key == 'KEY_DOWN':
+            selpieceidx = (selpieceidx + 1) % len(pieces.plist)
+        elif key == 'k' or key == 'KEY_UP':
+            selpieceidx = (selpieceidx - 1) % len(pieces.plist)
+        elif key == 'r':
+            # randomize piece
+            selpieceidx = random.randrange(len(pieces.plist))
         else:
             stdscr.addstr(19,0,key)
             stdscr.clrtoeol()
@@ -74,7 +83,16 @@ def main(stdscr):
         else:
             piecesframe.refresh()
             pieceswin.refresh()
-            pwins[focusedpiece].refresh()
+            
+            for w in pwins:
+                w.clear()
+                w.refresh()
+
+            selpiece = pieces.plist[selpieceidx]
+            pieces.draw(selpiece, pwins[focusedpwin])
+            pwins[focusedpwin].move(3, 7)
+
+            pwins[focusedpwin].refresh()
 
 
         key = stdscr.getkey()
