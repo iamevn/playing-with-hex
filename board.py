@@ -10,7 +10,7 @@ class board:
            with 0,0 in the middle, 0,floor(width/2) in bottom right,
            and floor(width/2),0 on far right)"""
         if width % 2 == 0:
-            raise ValueError(f"width({width}) must be odd")
+            raise ValueError(f"width({}) must be odd".format(width))
         # when r is -4, q goes from 0 to 4
         # when r is 0, q goes from -4 to 4
         # when r is 4, q goes from -4 to 0
@@ -35,7 +35,7 @@ class board:
     def set(self, q, r, val):
         """"sets q,r coord to val (may raise KeyError on invalid q/r)"""
         if not (q, r) in self.spaces:
-            raise KeyError(f"({q}, {r}) not in range")
+            raise KeyError("({}, {}) not in range".format(q, r))
         self.spaces[q, r] = val
 
     def clear(self, q, r):

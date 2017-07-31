@@ -9,6 +9,8 @@ def main(stdscr):
     class Data:
         pass
     cursor = Data()
+    cursor.focus = 0 # 0: board, 1: pwins
+    cursor.pwin = 0 # 0: pwin1, 1: pwin2, 2: pwin3
     cursor.q = 0
     cursor.r = 0
 
@@ -25,10 +27,17 @@ def main(stdscr):
     pwin2 = pieceswin.subwin(4, 8, 12, 10)
     pwin3 = pieceswin.subwin(4, 8, 12, 19)
     pwins = [pwin1, pwin2, pwin3]
-    focusedpwin = 0
-    selpieceidx = random.randrange(len(pieces.plist))
+    stored = [pieces.randompiece(), pieces.randompiece(), pieces.randompiece()]
 
-    mainfocused = True
+    def refresh_pwin(i):
+        w = pwins[i]
+        w.clear()
+        pieces.draw(stored[i], w)
+        w.refresh()
+
+    refresh_pwin(0)
+    refresh_pwin(1)
+    refresh_pwin(2)
 
     done = False
     key = ''
@@ -37,8 +46,9 @@ def main(stdscr):
             done = True
             break
         elif key == '\t':
-            mainfocused = not mainfocused
-        elif mainfocused:
+            cursor.focus = (cursor.focus + 1) % 2
+
+        elif cursor.focus == 0:
             if key == 'h' or key == 'KEY_LEFT':
                 if h.isValid(cursor.q - 1, cursor.r):
                     cursor.q -= 1
@@ -59,16 +69,19 @@ def main(stdscr):
                 stdscr.addstr(19,0,key)
                 stdscr.clrtoeol()
         elif key == 'h' or key == 'KEY_LEFT':
-            focusedpwin = (focusedpwin - 1) % 3
+            cursor.pwin = (cursor.pwin - 1) % 3
         elif key == 'l' or key == 'KEY_RIGHT':
-            focusedpwin = (focusedpwin + 1) % 3
+            cursor.pwin = (cursor.pwin + 1) % 3
         elif key == 'j' or key == 'KEY_DOWN':
-            selpieceidx = (selpieceidx + 1) % len(pieces.plist)
+            stored[cursor.pwin] = (stored[cursor.pwin] + 1) % len(pieces.plist)
+            refresh_pwin(cursor.pwin)
         elif key == 'k' or key == 'KEY_UP':
-            selpieceidx = (selpieceidx - 1) % len(pieces.plist)
+            stored[cursor.pwin] = (stored[cursor.pwin] - 1) % len(pieces.plist)
+            refresh_pwin(cursor.pwin)
         elif key == 'r':
             # randomize piece
-            selpieceidx = random.randrange(len(pieces.plist))
+            stored[cursor.pwin] = pieces.randompiece()
+            refresh_pwin(cursor.pwin)
         else:
             stdscr.addstr(19,0,key)
             stdscr.clrtoeol()
@@ -77,25 +90,22 @@ def main(stdscr):
         displaywin.move(*h.grid2screen(cursor.q, cursor.r))
 
         stdscr.refresh()
-        if mainfocused:
-            dispframe.refresh()
+
+        dispframe.refresh()
+        displaywin.refresh()
+        piecesframe.refresh()
+        pieceswin.refresh()
+
+        if cursor.focus == 0:
             displaywin.refresh()
         else:
-            piecesframe.refresh()
-            pieceswin.refresh()
-            
-            for w in pwins:
-                w.clear()
-                w.refresh()
-
-            selpiece = pieces.plist[selpieceidx]
-            pieces.draw(selpiece, pwins[focusedpwin])
-            pwins[focusedpwin].move(3, 7)
-
-            pwins[focusedpwin].refresh()
-
+            pwins[cursor.pwin].move(3, 7)
+            pwins[cursor.pwin].refresh()
 
         key = stdscr.getkey()
     
+class PieceFrame():
+    def __init__(self):
+        pass
 
 curses.wrapper(main)

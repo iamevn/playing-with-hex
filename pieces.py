@@ -1,5 +1,7 @@
 #!/usr/bin/env python3
 
+import random
+
 plist = [
 # X
 [(0, 0)],
@@ -101,9 +103,13 @@ plist = [
 [(0, 0), (1, 0), (2, 0), (0, 1)],
 ]
 
-def draw(piece, win, ch='#'):
+def draw(pieceidx, win, ch='#'):
     """piece's 0,0 is on the far left of second line of text"""
+    piece = plist[pieceidx]
     for (q, r) in piece:
         y = r + 1
         x = (q * 2 + r)
         win.addch(y, x, ord(ch))
+
+def randompiece():
+    return random.randrange(len(plist))
