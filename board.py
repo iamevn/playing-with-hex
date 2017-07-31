@@ -10,7 +10,7 @@ class board:
            with 0,0 in the middle, 0,floor(width/2) in bottom right,
            and floor(width/2),0 on far right)"""
         if width % 2 == 0:
-            raise ValueError(f"width({}) must be odd".format(width))
+            raise ValueError("width({}) must be odd".format(width))
         # when r is -4, q goes from 0 to 4
         # when r is 0, q goes from -4 to 4
         # when r is 4, q goes from -4 to 0
