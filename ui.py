@@ -17,6 +17,9 @@ def main(stdscr):
     dispframe = stdscr.subwin(11, 19, 0, 0)
     dispframe.box()
     displaywin = dispframe.subwin(10, 18, 1, 1)
+    stdscr.addstr(0, 22,  "u i")
+    stdscr.addstr(1, 21, "h   k")
+    stdscr.addstr(2, 22,  "n m")
 
     piecesframe = stdscr.subwin(6, 28, 11, 0)
     piecesframe.box()
@@ -49,18 +52,26 @@ def main(stdscr):
             cursor.focus = (cursor.focus + 1) % 2
 
         elif cursor.focus == 0:
-            if key == 'h' or key == 'KEY_LEFT':
-                if h.isValid(cursor.q - 1, cursor.r):
-                    cursor.q -= 1
-            elif key == 'j' or key == 'KEY_DOWN':
-                if h.isValid(cursor.q, cursor.r + 1):
-                    cursor.r += 1
-            elif key == 'k' or key == 'KEY_UP':
+            if key == 'u':
                 if h.isValid(cursor.q, cursor.r - 1):
                     cursor.r -= 1
-            elif key == 'l' or key == 'KEY_RIGHT':
+            if key == 'i':
+                if h.isValid(cursor.q + 1, cursor.r - 1):
+                    cursor.q += 1
+                    cursor.r -= 1
+            if key == 'h':
+                if h.isValid(cursor.q - 1, cursor.r):
+                    cursor.q -= 1
+            if key == 'k':
                 if h.isValid(cursor.q + 1, cursor.r):
                     cursor.q += 1
+            if key == 'n':
+                if h.isValid(cursor.q - 1, cursor.r + 1):
+                    cursor.q -= 1
+                    cursor.r += 1
+            if key == 'm':
+                if h.isValid(cursor.q, cursor.r + 1):
+                    cursor.r += 1
             elif key == ' ':
                 h.invert(cursor.q, cursor.r)
             elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
