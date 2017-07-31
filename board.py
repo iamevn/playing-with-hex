@@ -75,3 +75,33 @@ class board:
             y, x = self.grid2screen(q, r)
 
             scr.addch(y, x, ord(chars[self.spaces[q, r]]))
+
+    def can_place(self, q, r, piece):
+        for (pq, pr) in piece:
+            if not self.isValid(q + pq, r + pr):
+                return False
+            if self.get(q + pq, r + pr) != '.':
+                return False
+        return True
+
+    def place(self, q, r, piece, val='.'):
+        if self.can_place(q, r, piece):
+            for (pq, pr) in piece:
+                self.set(q + pq, r + pr, val)
+
+    def clearLines(self):
+        """check for any completed lines and clear them,
+        return how many lines cleared"""
+        hw = self.halfwidth
+        for r in range(-hw, hw + 1):
+            if r < 0:
+                qmin = -hw - r
+                qmax = hw
+            else:
+                qmin = -hw
+                qmax = hw - r
+            for q in range(qmin, qmax + 1):
+                if self.get(q, r) == '.':
+                    break
+                #TODO: stuff
+
