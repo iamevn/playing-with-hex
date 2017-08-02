@@ -2,6 +2,7 @@
 
 from math import floor
 from functools import reduce
+from curses import A_NORMAL, A_REVERSE
 import pieces
 
 class board:
@@ -19,6 +20,7 @@ class board:
         self.spaces = {}
         self.width = width
         self.halfwidth = floor(width / 2)
+        self.highlights = set()
         hw = self.halfwidth
         for r in range(-hw, hw + 1):
             if r < 0:
@@ -75,8 +77,10 @@ class board:
         chars = ['.', '#', 'O', '+', '*', '@', '$', '%', 'X', ' ']
         for q, r in self.spaces.keys():
             y, x = self.grid2screen(q, r)
-
-            scr.addch(y, x, ord(chars[self.spaces[q, r]]))
+            attr = A_NORMAL
+            if (q, r) in self.highlights:
+                attr = A_REVERSE
+            scr.addch(y, x, ord(chars[self.spaces[q, r]]), attr)
 
     def can_place(self, q, r, pieceidx):
         piece = pieces.plist[pieceidx]
@@ -145,4 +149,12 @@ class board:
         for line in toClear:
             for coord in line:
                 self.clear(*coord)
-
+    def highlight(self, q, r, pieceidx=None, clear=True):
+        if clear:
+            self.highlights = set()
+        if not pieceidx:
+            self.highlights.add((q, r))
+        else:
+            piece = pieces.plist[pieceidx]
+            for (pq, pr) in piece:
+                self.highlights.add((q + pq, r + pr))

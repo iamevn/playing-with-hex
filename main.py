@@ -80,15 +80,10 @@ def main(stdscr):
                 chpiece = stored[chosen]
                 if h.can_place(cursor.q, cursor.r, chpiece):
                     h.place(cursor.q, cursor.r, chpiece)
+                    h.highlight(cursor.q, cursor.r, chpiece)
                     stored[chosen] = pieces.randompiece()
                     refresh_pwin(chosen)
                     h.clearLines()
-
-            # stored[cursor.pwin] = pieces.randompiece()
-            # refresh_pwin(cursor.pwin)
-            else:
-                stdscr.addstr(19,0,key)
-                stdscr.clrtoeol()
         elif key == 'h' or key == 'KEY_LEFT':
             cursor.pwin = (cursor.pwin - 1) % 3
         elif key == 'l' or key == 'KEY_RIGHT':
