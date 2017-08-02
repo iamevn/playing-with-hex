@@ -75,8 +75,6 @@ def main(stdscr):
             elif key == ' ':
                 h.invert(cursor.q, cursor.r)
                 h.clearLines()
-            # elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-            #     h.toggle(cursor.q, cursor.r, int(key))
             elif key in ['1', '2', '3']:
                 chosen = int(key) - 1
                 chpiece = stored[chosen]
@@ -127,8 +125,4 @@ def main(stdscr):
 
         key = stdscr.getkey()
     
-class PieceFrame():
-    def __init__(self):
-        pass
-
 curses.wrapper(main)
