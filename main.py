@@ -85,9 +85,16 @@ def main(stdscr):
                 if h.can_place(cursor.q, cursor.r, chpiece):
                     h.place(cursor.q, cursor.r, chpiece)
                     h.highlight(cursor.q, cursor.r, chpiece)
-                    stored[chosen] = pieces.randompiece()
-                    refresh_pwin(chosen)
+                    # stored "falls" to the left like in actual game
+                    stored.pop(chosen)
+                    stored.append(pieces.randompiece())
+                    refresh_pwin(0)
+                    refresh_pwin(1)
+                    refresh_pwin(2)
                     h.clearLines()
+                    # focus incoming piece for ease of use
+                    cursor.focus = 1
+                    cursor.pwin = 2
         elif key == 'h' or key == 'KEY_LEFT':
             cursor.pwin = (cursor.pwin - 1) % 3
         elif key == 'l' or key == 'KEY_RIGHT':
