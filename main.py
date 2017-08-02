@@ -54,6 +54,9 @@ def main(stdscr):
             best = best_placement(h, stored)
             h.highlight(*best["coord"], best["piece"])
         elif key == 'c':
+            # if not best:
+            #     best = best_placement(h, stored)
+            #     h.highlight(*best["coord"], best["piece"])
             if best:
                 h.place(*best["coord"], best["piece"])
                 stored.remove(best["piece"])
@@ -65,6 +68,7 @@ def main(stdscr):
                 # focus incoming piece for ease of use
                 cursor.focus = 1
                 cursor.pwin = 2
+                best = None
         elif key == '\t':
             cursor.focus = (cursor.focus + 1) % 2
 
