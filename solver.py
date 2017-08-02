@@ -16,7 +16,10 @@ def best_placement(board, stored_pieces):
                 attempt = whatif_score(board, space, pieceidx, other_stored)
                 if attempt > best["score"]:
                     best = {"piece": pieceidx, "coord": space, "score": attempt}
-    return best
+    if best["piece"] == None:
+        return None
+    else:
+        return best
 
 
 def whatif_score(board, space, pieceidx, stored):

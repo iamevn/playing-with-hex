@@ -23,14 +23,19 @@ def main(stdscr):
     stdscr.addstr(1, 21, "h   k")
     stdscr.addstr(2, 22,  "n m")
 
-    piecesframe = stdscr.subwin(6, 28, 11, 0)
+    f= Data()
+    f.pheight = 4
+    f.pwidth = 10
+    f.originy = 12
+    f.originx = 1
+    piecesframe = stdscr.subwin(f.pheight + 2, 3 * f.pwidth + 4, f.originy - 1, f.originx - 1)
     piecesframe.box()
-    pieceswin = piecesframe.subwin(4, 26, 12, 1)
-    pieceswin.vline(0, 8, curses.ACS_VLINE, 4)
-    pieceswin.vline(0, 17, curses.ACS_VLINE, 4)
-    pwin1 = pieceswin.subwin(4, 8, 12, 1)
-    pwin2 = pieceswin.subwin(4, 8, 12, 10)
-    pwin3 = pieceswin.subwin(4, 8, 12, 19)
+    pieceswin = piecesframe.subwin(f.pheight, 3 * f.pwidth + 2, f.originy, f.originx)
+    pieceswin.vline(0, f.pwidth, curses.ACS_VLINE, f.pheight)
+    pieceswin.vline(0, 2 * f.pwidth + 1, curses.ACS_VLINE, f.pheight)
+    pwin1 = pieceswin.subwin(f.pheight, f.pwidth, f.originy, f.originx)
+    pwin2 = pieceswin.subwin(f.pheight, f.pwidth, f.originy, f.originx + f.pwidth + 1)
+    pwin3 = pieceswin.subwin(f.pheight, f.pwidth, f.originy, f.originx + 2 * f.pwidth + 2)
     pwins = [pwin1, pwin2, pwin3]
     stored = [pieces.randompiece(), pieces.randompiece(), pieces.randompiece()]
 
@@ -52,7 +57,8 @@ def main(stdscr):
             break
         elif key == 'b':
             best = best_placement(h, stored)
-            h.highlight(*best["coord"], best["piece"])
+            if best:
+                h.highlight(*best["coord"], best["piece"])
         elif key == 'c':
             # if not best:
             #     best = best_placement(h, stored)
