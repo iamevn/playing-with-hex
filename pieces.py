@@ -113,3 +113,8 @@ def draw(pieceidx, win, ch='#'):
 
 def randompiece():
     return random.randrange(len(plist))
+
+def likelyhood(pieceidx):
+    """the likelyhood of given piece coming up.
+    assuming all pieces have even chances until I do some testing"""
+    return 1 / len(plist)

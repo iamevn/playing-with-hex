@@ -1,11 +1,12 @@
 #!/usr/bin/env python3
 
 import curses, random
-from board import board
+from board import Board
+from solver import best_placement
 import pieces
 
 def main(stdscr):
-    h = board()
+    h = Board()
     class Data:
         pass
     cursor = Data()
@@ -48,6 +49,9 @@ def main(stdscr):
         if key == 'q':
             done = True
             break
+        elif key == 'b':
+            best = best_placement(h, stored)
+            h.highlight(*best["coord"], best["piece"])
         elif key == '\t':
             cursor.focus = (cursor.focus + 1) % 2
 

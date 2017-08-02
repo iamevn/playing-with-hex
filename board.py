@@ -5,9 +5,9 @@ from functools import reduce
 from curses import A_NORMAL, A_REVERSE
 import pieces
 
-class board:
-    def __init__(self, width=9):
-        """initialize to an empty hex board
+class Board:
+    def __init__(self, copyfrom=None, width=9):
+        """initialize to an empty hex board unless copyfrom is a board
            (using Axial coordinate system from
            http://www.redblobgames.com/grids/hexagons/#coordinates 
            with 0,0 in the middle, 0,floor(width/2) in bottom right,
@@ -30,7 +30,10 @@ class board:
                 qmin = -hw
                 qmax = hw - r
             for q in range(qmin, qmax + 1):
-                self.spaces[q, r] = 0
+                if copyfrom:
+                    self.spaces[q, r] = copyfrom.spaces[q, r]
+                else:
+                    self.spaces[q, r] = 0
 
     def get(self, q, r):
         """"returns current value at q,r coord (may raise KeyError on invalid q/r)"""
@@ -139,7 +142,6 @@ class board:
                 q += 1
                 r -= 1
             yield l
-
 
     def clearLines(self):
         toClear = []
