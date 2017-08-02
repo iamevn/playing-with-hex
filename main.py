@@ -14,6 +14,7 @@ def main(stdscr):
     cursor.pwin = 0 # 0: pwin1, 1: pwin2, 2: pwin3
     cursor.q = 0
     cursor.r = 0
+    best = None
 
     dispframe = stdscr.subwin(11, 19, 0, 0)
     dispframe.box()
@@ -52,6 +53,18 @@ def main(stdscr):
         elif key == 'b':
             best = best_placement(h, stored)
             h.highlight(*best["coord"], best["piece"])
+        elif key == 'c':
+            if best:
+                h.place(*best["coord"], best["piece"])
+                stored.remove(best["piece"])
+                stored.append(pieces.randompiece())
+                refresh_pwin(0)
+                refresh_pwin(1)
+                refresh_pwin(2)
+                h.clearLines()
+                # focus incoming piece for ease of use
+                cursor.focus = 1
+                cursor.pwin = 2
         elif key == '\t':
             cursor.focus = (cursor.focus + 1) % 2
 
