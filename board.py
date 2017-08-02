@@ -1,6 +1,8 @@
 #!/usr/bin/env python3
 
 from math import floor
+from functools import reduce
+import pieces
 
 class board:
     def __init__(self, width=9):
@@ -76,24 +78,26 @@ class board:
 
             scr.addch(y, x, ord(chars[self.spaces[q, r]]))
 
-    def can_place(self, q, r, piece):
+    def can_place(self, q, r, pieceidx):
+        piece = pieces.plist[pieceidx]
         for (pq, pr) in piece:
             if not self.isValid(q + pq, r + pr):
                 return False
-            if self.get(q + pq, r + pr) != '.':
+            if self.get(q + pq, r + pr) != 0:
                 return False
         return True
 
-    def place(self, q, r, piece, val='.'):
-        if self.can_place(q, r, piece):
+    def place(self, q, r, pieceidx, val=1):
+        piece = pieces.plist[pieceidx]
+        if self.can_place(q, r, pieceidx):
             for (pq, pr) in piece:
                 self.set(q + pq, r + pr, val)
 
-    def clearLines(self):
-        """check for any completed lines and clear them,
-        return how many lines cleared"""
+    def genLines(self):
         hw = self.halfwidth
+        # - horiz
         for r in range(-hw, hw + 1):
+            l = []
             if r < 0:
                 qmin = -hw - r
                 qmax = hw
@@ -101,7 +105,44 @@ class board:
                 qmin = -hw
                 qmax = hw - r
             for q in range(qmin, qmax + 1):
-                if self.get(q, r) == '.':
-                    break
-                #TODO: stuff
+                l.append((q, r))
+            yield l
+        # \ diagonal
+        for q in range(-hw, hw + 1):
+            l = []
+            if q > 0:
+                rmin = -hw
+                rmax = hw - q
+            else:
+                rmin = -hw - q
+                rmax = hw
+            for r in range(rmin, rmax + 1):
+                l.append((q, r))
+            yield l
+        # / diagonal
+        for qAtAxis in range(-hw, hw + 1):
+            l = []
+            if qAtAxis < 0:
+                qrmin = -hw
+                qrmax = hw + qAtAxis
+            else:
+                qrmin = -hw + qAtAxis
+                qrmax = hw
+            q = qrmin
+            r = qrmax
+            while q <= qrmax and r >= qrmin:
+                l.append((q, r))
+                q += 1
+                r -= 1
+            yield l
+
+
+    def clearLines(self):
+        toClear = []
+        for line in self.genLines():
+            if reduce((lambda a, b: a and b), map((lambda c: self.get(*c) != 0), line)):
+                toClear.append(line)
+        for line in toClear:
+            for coord in line:
+                self.clear(*coord)
 

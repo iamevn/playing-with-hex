@@ -74,8 +74,20 @@ def main(stdscr):
                     cursor.r += 1
             elif key == ' ':
                 h.invert(cursor.q, cursor.r)
-            elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
-                h.toggle(cursor.q, cursor.r, int(key))
+                h.clearLines()
+            # elif key in ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9']:
+            #     h.toggle(cursor.q, cursor.r, int(key))
+            elif key in ['1', '2', '3']:
+                chosen = int(key) - 1
+                chpiece = stored[chosen]
+                if h.can_place(cursor.q, cursor.r, chpiece):
+                    h.place(cursor.q, cursor.r, chpiece)
+                    stored[chosen] = pieces.randompiece()
+                    refresh_pwin(chosen)
+                    h.clearLines()
+
+            # stored[cursor.pwin] = pieces.randompiece()
+            # refresh_pwin(cursor.pwin)
             else:
                 stdscr.addstr(19,0,key)
                 stdscr.clrtoeol()
