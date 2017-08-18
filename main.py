@@ -23,7 +23,7 @@ def main(stdscr):
     stdscr.addstr(1, 21, "h   k")
     stdscr.addstr(2, 22,  "n m")
 
-    f= Data()
+    f = Data()
     f.pheight = 4
     f.pwidth = 10
     f.originy = 12
@@ -38,6 +38,22 @@ def main(stdscr):
     pwin3 = pieceswin.subwin(f.pheight, f.pwidth, f.originy, f.originx + 2 * f.pwidth + 2)
     pwins = [pwin1, pwin2, pwin3]
     stored = [pieces.randompiece(), pieces.randompiece(), pieces.randompiece()]
+
+    l = Data()
+    l.pheight = 6
+    l.pwidth = 12
+    l.originy = 0
+    l.originx = 35
+    listwin = stdscr.subwin(l.pheight * 5 + 0, l.pwidth * 5 + 0, l.originy, l.originx)
+    for y in range(5):
+        for x in range(5):
+            tmpwin = listwin.subwin(l.pheight, l.pwidth, l.originy + y * l.pheight + 0, l.originx + x * l.pwidth + 0)
+            tmpwin.box()
+            tmpwin.addstr("{}{}".format(y, x))
+            pieces.draw(5 * y + x, tmpwin, offset = (1, 1))
+    
+    piecesel = None
+
 
     def refresh_pwin(i):
         w = pwins[i]
@@ -123,17 +139,27 @@ def main(stdscr):
         elif key == 'l' or key == 'KEY_RIGHT':
             cursor.pwin = (cursor.pwin + 1) % 3
         elif key == 'j' or key == 'KEY_DOWN':
+            # scroll through to select piece
             stored[cursor.pwin] = (stored[cursor.pwin] + 1) % len(pieces.plist)
             refresh_pwin(cursor.pwin)
         elif key == 'k' or key == 'KEY_UP':
             stored[cursor.pwin] = (stored[cursor.pwin] - 1) % len(pieces.plist)
             refresh_pwin(cursor.pwin)
+        elif key in ['0', '1', '2', '3', '4']:
+            # key in piece more quickly than scrolling through
+            if piecesel == None:
+                piecesel = 5 * int(key)
+            else:
+                piecesel += int(key)
+                stored[cursor.pwin] = piecesel
+                refresh_pwin(cursor.pwin)
+                piecesel = None
         elif key == 'r':
             # randomize piece
             stored[cursor.pwin] = pieces.randompiece()
             refresh_pwin(cursor.pwin)
         else:
-            stdscr.addstr(19,0,key)
+            stdscr.addstr(30,0,key)
             stdscr.clrtoeol()
 
         h.draw(displaywin)
